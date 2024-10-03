@@ -90,8 +90,4 @@ body {
   body {
     @apply bg-background text-foreground;
   }
-
-  .container {
-    @apply p-96 w-full 
-  }
 }

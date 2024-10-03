@@ -18,10 +18,11 @@ export default async function handler(
     switch (method) {
         case "GET":
             return await controller.getPosts(req, res)
-        case "POST":
-            return await controller.postPost(req, res)
+        case "DELETE":
+            console.log('asdasdasd')
+            return await controller.deletePost(req, res)
         default:
-            res.setHeader('Allow', ['GET', 'POST'])
+            res.setHeader('Allow', ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
             return res.status(405).end(`Method ${method} Not Allowed`)
     }
 }

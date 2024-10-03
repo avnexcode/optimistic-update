@@ -8,17 +8,31 @@ import { postSchema } from "@/types/post";
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useMutationCreatePost } from "@/features/post/useMutationCreatePost";
+import { useToast } from "@/hooks/use-toast";
+import Loader from "@/components/elements/Loader";
 const renderElement = (posts: Post[]) => posts?.map(post => <Card key={post.id} post={post} />)
 
 export default function Home() {
-  const { data, isLoading } = useQueryPost()
-  const form = useForm<Post>({ 
+  const { toast } = useToast()
+  const { data, isLoading, refetch } = useQueryPost()
+  const { mutate, isPending, variables } = useMutationCreatePost({
+    onSuccess: () => {
+      refetch()
+      toast({
+        title: "Success",
+        description: "Success Created New Post",
+      })
+      form.reset();
+    }
+  })
+  const form = useForm<Post>({
     defaultValues: {
       post: ""
     },
-    resolver: zodResolver(postSchema) 
+    resolver: zodResolver(postSchema)
   })
-  const onSubmit = (data: Post) => console.log(data)
+  const onSubmit = (data: Post) => mutate(data)
   return (
     <Container className="flex flex-col gap-20">
       <div className="flex w-full justify-center gap-2">
@@ -39,13 +53,14 @@ export default function Home() {
               )}
             />
             <div className="flex justify-end">
-              <Button type="submit">Post</Button>
+              <Button type="submit" className="disabled:bg-red-700" disabled={isPending}>{isPending ? 'Pending' : 'Post'}</Button>
             </div>
           </form>
         </Form>
       </div>
       <div className="flex flex-col w-full gap-5">
-        {isLoading ? <h1>Loading...</h1> : renderElement(data)}
+        {isLoading ? <Loader /> : renderElement(data)}
+        {isPending && <Card className="text-red-200" post={variables} />}
       </div>
     </Container>
   );

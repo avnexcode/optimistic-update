@@ -9,7 +9,7 @@ const Container: React.FC<ContainerProps> = ({
   children, 
   className = '' 
 }) => (
-  <div className={`container ${className}`.trim()}>
+  <div className={`pt-20 px-20 ${className}`.trim()}>
     {children || 'Container'}
   </div>
 )

@@ -2,13 +2,26 @@ import { Post } from "@/types/post"
 import prisma from "../db"
 
 export const findAllPosts = async () => {
-    const response = await prisma.post.findMany()
-    return response
+    return await prisma.post.findMany()
 }
 
-export const insertPost = async (newPostData: Omit<Post, 'id'>) => {
-    const response = await prisma.post.create({
+export const findPostID = async (id: string) => {
+    return await prisma.post.findUnique({ where: { id } })
+}
+
+export const insertPost = async (newPostData: Post) => {
+    return await prisma.post.create({
         data: newPostData
     })
-    return response
+}
+
+export const updatePost = async (postData: Post, id: string) => {
+    return await prisma.post.update({
+        data: postData,
+        where: { id }
+    })
+}
+
+export const destroyPost = async (id: string) => {
+    return await prisma.post.delete({ where: { id } })
 }
